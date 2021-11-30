@@ -1,4 +1,4 @@
-# Databricks Deploy with Trraform
+# Databricks Deploy with Terraform
 
 Esse repositório é um template de Terraform para realizar o deploy de conexão de repositórios git com o Databricks.
 
