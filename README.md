@@ -8,6 +8,10 @@ O wrapper encapsula os seguintes módulos com base na sua responsabilidade?
 
 - `repository`: Responsável por criar o vínculo entre um repositório git com o Databricks.
     - Repositório `nome-do-repositorio` extratido do parâmetro `repository.url="https://nome-provider.com.br/nome-do-repositorio.git"`.
+- `cluster`: Responsável por criar um cluster de workers para execução de um job.
+    - Cluster `cls-nome-do-projeto`.
+- `job`: Responsável por criar um job databricks à partir de um notebook.
+    - Job `job-nome-do-job-nome-do-projeto`.
 
 ## Configuração do Databricks
 
@@ -22,7 +26,6 @@ No menu lateral esquerdo, clicar em *Settings* > *User Settings*:
 Na aba *Access Tokens*, clicar em *Generate New Token*:
 
 ![./images/token_user_settings.png](./images/token_user_settings.png)
-
 
 Ao gerar o token, deixar o parâmtro *Lifetime* como vazio para o token não expirar:
 
@@ -54,7 +57,6 @@ meurepositorio
 │
 └───scripts
     │   script1.py
-
 ```
 
 ## script1
@@ -124,6 +126,54 @@ repository = {
     gitProvider = "gitHub"
     branch      = "master" 
 }
+
+# Definição do cluster para execução de jobs, onde:
+#   - configuration: Runtime do cluster
+#   - node: Configuração de infraestrutura do cluster
+cluster = {
+#   - use_ml: Se o node deve conter ML runtime
+#   - genomics: Se o node deve conter Genomics runtime
+#   - gpu: Se o node deve conter suporte a GPUs
+#   - photon: Se o node deve conter Photon runtime
+#   - version_scala: Versão do scala
+#   - version_spark: Versão do spark
+  configuration = {
+    use_ml        = false
+    use_genomics  = false
+    use_gpu       = false
+    use_photon    = false
+    version_scala = "2.12"
+    version_spark = "3"
+  }
+#   - local_disk: Utiliza apenas armazenamento local
+#   - gb_per_core: Número de gigabytes por core disponível na instância
+#   - min_gpus: Número minimo de CPUs disponíveis na instância
+  node = {
+    local_disk  = false
+    gb_per_core = 0
+    min_cores   = 0
+    min_gpus    = 0
+  }
+#   - autotermination_minutes: Termina o cluster por inatividade após o tempo determinado
+  autotermination_minutes = 15
+#   - min: Quantidade mínima de instâncias
+#   - max: Quantidade máxima de instâncias
+  scaling = {
+    min = 0
+    max = 1
+  }
+}
+
+# Definição do jobs, onde::
+#   - name: Nome do job
+#   - notebook: Diretório do script python dentro do repositório definido
+jobs = [
+  {
+    name     = "job1"
+    notebook = "scripts/main"
+  }
+]
+
 ```
 
 ### Configuração Pipeline
